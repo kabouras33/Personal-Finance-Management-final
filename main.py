@@ -1,15 +1,12 @@
 # Εισαγωγή βιβλιοθήκη Tkinter
 from tkinter import *
-
-
+import subprocess
 
 def openExpenses():
-   from subprocess import call
-   call(["python", "expenses.py"])
+   subprocess.run(["python", "expenses.py"])
 
 def openIncome():
-   from subprocess import call
-   call(["python", "income.py"])
+   subprocess.run(["python", "income.py"])
 
 
 # Create the root window
@@ -43,8 +40,9 @@ filemenu.add_separator()
 filemenu.add_command(label="Έξοδος", font = ("Bahnschrift Condensed", "14"), command=root.quit)
 menubar.add_cascade(label="Μενού", menu=filemenu)
 root.config(menu=menubar)
-
-root.iconbitmap('client.ico')
-
+#input("Press enter to continue...")
+#root.iconbitmap(get_path('client.ico'))
+#input("Press enter to continue...")
 # Start the event loop
 root.mainloop()
+

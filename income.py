@@ -20,7 +20,7 @@ def listAllExpenses():
     # καθαρίζοντας τον πίνακα
     data_table.delete(*data_table.get_children())
     # εκτέλεση της εντολής SQL SELECT για την ανάκτηση των δεδομένων από τον πίνακα της βάσης δεδομένων  
-    all_data = dbconnector.execute('SELECT * FROM Expense')
+    all_data = dbconnector.execute('SELECT * FROM Income')
 
     # πέρνω τα δεδομένα από τον query
     data = all_data.fetchall()
@@ -99,7 +99,7 @@ def removeExpense():
 
     # εάν ο χρήστης πει ΝΑΙ, εκτελώντας την εντολή SQL DELETE FROM
     if confirmation:
-        dbconnector.execute('DELETE FROM Expense WHERE ID=%d' % valuesSelected[0])
+        dbconnector.execute('DELETE FROM Income WHERE ID=%d' % valuesSelected[0])
         dbconnector.commit()
 
         # καλώντας τη συνάρτηση listAllExpenses().  
@@ -117,14 +117,14 @@ def removeAllExpenses():
 
     # εμφανίζοντας ένα πλαίσιο μηνύματος που ζητά επιβεβαίωση  
     confirmation = mb.askyesno('Είστε σίγουροι;',
-                               'Είστε βέβαιοι ότι θέλετε να διαγράψετε όλα τα στοιχεία εξόδων από τη βάση δεδομένων;',
+                               'Είστε βέβαιοι ότι θέλετε να διαγράψετε όλα τα στοιχεία εσόδων από τη βάση δεδομένων;',
                                icon='warning')
 
     # εάν ο χρήστης πει ΝΑΙ, διαγράφοντας τις εγγραφές από τον πίνακα και εκτελώντας την εντολή SQL DELETE FROM για να διαγράψετε όλες τις καταχωρήσεις  
     if confirmation:
         data_table.delete(*data_table.get_children())
 
-        dbconnector.execute('DELETE FROM Expense')
+        dbconnector.execute('DELETE FROM Income')
         dbconnector.commit()
 
         # καλώντας τη συνάρτηση clearFields().   
@@ -134,7 +134,7 @@ def removeAllExpenses():
         listAllExpenses()
 
         # επιστρέφοντας το πλαίσιο μηνύματος που εμφανίζει τις πληροφορίες  
-        mb.showinfo('Όλα τα έξοδα διαγράφηκαν», «Όλα τα έξοδα διαγράφηκαν επιτυχώς')
+        mb.showinfo('Όλα τα έσοδα διαγράφηκαν», «Όλα τα έσοδα διαγράφηκαν επιτυχώς')
     else:
         # επιστρέφοντας το πλαίσιο μηνύματος, εάν η λειτουργία ματαιωθεί  
         mb.showinfo('Εντάξει τότε», «Η εργασία ματαιώθηκε και καμία δαπάνη δεν διαγράφηκε!')
@@ -156,7 +156,7 @@ def addAnotherExpense():
     else:
         # εκτέλεση της εντολής SQL INSERT INTO  
         dbconnector.execute(
-            'INSERT INTO Expense (Date, Payee, Description, Amount, ModeOfPayment) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO Income (Date, Payee, Description, Amount, ModeOfPayment) VALUES (?, ?, ?, ?, ?)',
             (dateField.get_date(), payee.get(), description.get(), amount.get(), modeOfPayment.get())
         )
         dbconnector.commit()
@@ -169,7 +169,7 @@ def addAnotherExpense():
 
         # επιστρέφοντας το πλαίσιο μηνύματος που εμφανίζει πληροφορίες  
         mb.showinfo(
-            'Έξοδα προστέθηκαν», «Η δαπάνη της οποίας τα στοιχεία μόλις εισαγάγατε προστέθηκε στη βάση δεδομένων')
+            'Έσοδα προστέθηκαν», «Η δαπάνη της οποίας τα στοιχεία μόλις εισαγάγατε προστέθηκε στη βάση δεδομένων')
 
     # 7η Μέθοδος για την επεξεργασία σε ένα έξοδο
 
@@ -194,7 +194,7 @@ def editExpense():
 
     # εκτέλεση της εντολής SQL UPDATE για ενημέρωση της εγγραφής στον πίνακα της βάσης δεδομένων
     dbconnector.execute(
-        'UPDATE Expense SET Date = ?, Payee = ?, Description = ?, Amount = ?, ModeOfPayment = ? WHERE ID = ?',
+        'UPDATE Income SET Date = ?, Payee = ?, Description = ?, Amount = ?, ModeOfPayment = ? WHERE ID = ?',
         (dateField.get_date(), payee.get(), description.get(), amount.get(), modeOfPayment.get(), content[0])
     )
     dbconnector.commit()
@@ -260,7 +260,7 @@ def deleteCategory():
 
     # εάν ο χρήστης πει ΝΑΙ, εκτελώντας την εντολή SQL DELETE FROM
     if confirmation:
-        dbconnector.execute("DELETE FROM ExpenseCategories WHERE nameCat='%s'" % value)
+        dbconnector.execute("DELETE FROM IncomeCategories WHERE nameCat='%s'" % value)
         dbconnector.commit()
 
         # επιστρέφοντας το πλαίσιο μηνύματος που εμφανίζει τις πληροφορίες
@@ -293,7 +293,7 @@ def addCategory():
     # χρησιμοποιώντας ορισμένες καθολικές μεταβλητές
     global dbconnector, category, modeField, my_list, modeOfPayment
 
-    all_data = dbconnector.execute("SELECT * FROM ExpenseCategories WHERE nameCat='%s'" % category.get())
+    all_data = dbconnector.execute("SELECT * FROM IncomeCategories WHERE nameCat='%s'" % category.get())
     row = all_data.fetchone()
 
     # Εάν είναι κενή η κατηγορία, εμφανίζει το πλαίσιο μηνύματος σφάλμα
@@ -308,7 +308,7 @@ def addCategory():
     else:
         # εκτέλεση της εντολής SQL INSERT INTO
         dbconnector.execute(
-            'INSERT INTO ExpenseCategories (nameCat) VALUES (?)',
+            'INSERT INTO IncomeCategories (nameCat) VALUES (?)',
             (category.get(),)
         )
 
@@ -326,7 +326,7 @@ def viewStats():
     global dbconnector, formdateField, todateField
 
     # εκτέλεση της εντολής SQL SELECT για την ανάκτηση των δεδομένων από τον πίνακα της βάσης δεδομένων
-    all_data = dbconnector.execute("SELECT * FROM Expense where Date between ? and ?",
+    all_data = dbconnector.execute("SELECT * FROM Income where Date between ? and ?",
                                    (formdateField.get(), todateField.get()))
 
     # πέρνω τα δεδομένα από τον query
@@ -360,13 +360,13 @@ if __name__ == "__main__":
 
     # καθορίζοντας τη λειτουργία που θα εκτελείται κάθε φορά που εκτελείται η εφαρμογή  
     dbconnector.execute(
-        'CREATE TABLE IF NOT EXISTS Expense (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Date DATETIME, Payee TEXT, Description TEXT, Amount FLOAT, ModeOfPayment TEXT)'
+        'CREATE TABLE IF NOT EXISTS Income (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Date DATETIME, Payee TEXT, Description TEXT, Amount FLOAT, ModeOfPayment TEXT)'
     )
     # εκτελώντας την παραπάνω εντολή  
     dbconnector.commit()
 
     dbconnector.execute(
-        'CREATE TABLE IF NOT EXISTS ExpenseCategories (idCat INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, nameCat TEXT)'
+        'CREATE TABLE IF NOT EXISTS IncomeCategories (idCat INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, nameCat TEXT)'
     )
     # εκτελώντας την παραπάνω εντολή
     dbconnector.commit()
@@ -440,7 +440,7 @@ if __name__ == "__main__":
 
     payeeLabel = Label(
         frameL2,
-        text="Αιτιολογία Εξόδου:",
+        text="Αιτιολογία Εσόδου:",
         font=("consolas", "11", "bold"),
         bg="#FFF8DC",
         fg="#000000"
@@ -521,7 +521,7 @@ if __name__ == "__main__":
     # δημιουργία κουμπιών για τον χειρισμό δεδομένων στο αριστερό πάνελ
     insertButton = Button(
         frameL3,
-        text="Προσθήκη εξόδου",
+        text="Προσθήκη εσόδου",
         font=("Bahnschrift Condensed", "13"),
         width=30,
         bg="#90EE90",
@@ -548,7 +548,7 @@ if __name__ == "__main__":
     # ετικέτα categoryLabel
     categoryLabel = Label(
         frameL3,
-        text="Κατηγορίες εξόδων",
+        text="Κατηγορίες εσόδων",
         font=("Bahnschrift Condensed", "15"),
         width=45,
         bg="#F5DEB3",
@@ -617,7 +617,7 @@ if __name__ == "__main__":
     # ετικέτα Στατιστικά
     statsLabel = Label(
         frameL3,
-        text="Στατιστικά εξόδων",
+        text="Στατιστικά εσόδων",
         font=("Bahnschrift Condensed", "15"),
         width=45,
         bg="#F5DEB3",
@@ -688,7 +688,7 @@ if __name__ == "__main__":
     # δημιουργία κουμπιών για τον χειρισμό δεδομένων επάνω πάνελ
     viewButton = Button(
         frameR1,
-        text="Επιλογή Εξόδου",
+        text="Επιλογή Εσόδου",
         font=("Bahnschrift Condensed", "13"),
         width=35,
         bg="#FFDEAD",
@@ -701,7 +701,7 @@ if __name__ == "__main__":
 
     editButton = Button(
         frameR1,
-        text="Αποθήκευση εξόδου",
+        text="Αποθήκευση εσόδου",
         font=("Bahnschrift Condensed", "13"),
         width=35,
         bg="#FFDEAD",
@@ -714,7 +714,7 @@ if __name__ == "__main__":
 
     deleteButton = Button(
         frameR1,
-        text="Διαγραφή εξόδου",
+        text="Διαγραφή εσόδου",
         font=("Bahnschrift Condensed", "13"),
         width=35,
         bg="#FFDEAD",
@@ -727,7 +727,7 @@ if __name__ == "__main__":
 
     deleteAllButton = Button(
         frameR1,
-        text="Διαγραφή όλων των εξόδων",
+        text="Διαγραφή όλων των εσόδων",
         font=("Bahnschrift Condensed", "13"),
         width=35,
         bg="#FFDEAD",
@@ -748,7 +748,7 @@ if __name__ == "__main__":
     data_table = ttk.Treeview(
         frameR2,
         selectmode=BROWSE,
-        columns=('ID', 'Ημερομηνία', 'Αιτιολογία Εξόδου', 'Περιγραφή', 'Ποσό', 'Κατηγορία')
+        columns=('ID', 'Ημερομηνία', 'Αιτιολογία Εσόδου', 'Περιγραφή', 'Ποσό', 'Κατηγορία')
     )
 
     # κάθετη γραμμή κύλισης στον πίνακα
@@ -767,7 +767,7 @@ if __name__ == "__main__":
     # προσθήκη επικεφαλίδων στον πίνακα
     data_table.heading('ID', text='ID', anchor=CENTER)
     data_table.heading('Ημερομηνία', text='Ημερομηνία', anchor=CENTER)
-    data_table.heading('Αιτιολογία Εξόδου', text='Αιτιολογία Εξόδου', anchor=CENTER)
+    data_table.heading('Αιτιολογία Εσόδου', text='Αιτιολογία Εσόδου', anchor=CENTER)
     data_table.heading('Περιγραφή', text='Περιγραφή', anchor=CENTER)
     data_table.heading('Ποσό', text='Ποσό', anchor=CENTER)
     data_table.heading('Κατηγορία', text='Κατηγορία', anchor=CENTER)
